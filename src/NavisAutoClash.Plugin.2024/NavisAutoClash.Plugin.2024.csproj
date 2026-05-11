@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>NavisAutoClash.Plugin</RootNamespace>
+    <AssemblyName>NavisAutoClash.2024</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2024</NavisworksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NavisAutoClash.Core\NavisAutoClash.Core.csproj" />
+    <ProjectReference Include="..\NavisAutoClash.Infrastructure\NavisAutoClash.Infrastructure.csproj" />
+    <ProjectReference Include="..\NavisAutoClash.UI\NavisAutoClash.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api" Condition="Exists('$(NavisworksPath)\Autodesk.Navisworks.Api.dll')">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash" Condition="Exists('$(NavisworksPath)\Autodesk.Navisworks.Clash.dll')">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,26 @@
+## Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+packages/
+*.nuget.props
+*.nuget.targets
+project.assets.json
+project.nuget.cache
+
+## Navisworks Temp
+*.nwf.tmp
+*.nwd.tmp
+
+## Logs
+*.log
+build_output.txt
+step_262.json
+search_vm.txt
+matches.txt

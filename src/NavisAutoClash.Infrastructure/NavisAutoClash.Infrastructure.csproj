@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>NavisAutoClash.Infrastructure</RootNamespace>
+    <AssemblyName>NavisAutoClash.Infrastructure</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2024</NavisworksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NavisAutoClash.Core\NavisAutoClash.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api" Condition="Exists('$(NavisworksPath)\Autodesk.Navisworks.Api.dll')">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash" Condition="Exists('$(NavisworksPath)\Autodesk.Navisworks.Clash.dll')">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
