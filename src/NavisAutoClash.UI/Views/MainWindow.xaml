@@ -5,59 +5,430 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:NavisAutoClash.UI.ViewModels"
         mc:Ignorable="d"
-        Title="Auto Clash" Height="450" Width="600"
-        WindowStartupLocation="CenterScreen" Background="#F5F5F5">
-    <Grid Margin="20">
+        Title="NavisAutoClash — Automated Clash Test Generator"
+        Width="760" Height="620"
+        MinWidth="600" MinHeight="480"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E2E"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- ── Color Palette ─────────────────────────────────────────────── -->
+        <Color x:Key="BgDeep">#1E1E2E</Color>
+        <Color x:Key="BgCard">#2A2A3E</Color>
+        <Color x:Key="BgInput">#313145</Color>
+        <Color x:Key="AccentBlue">#4E9EFF</Color>
+        <Color x:Key="AccentGreen">#3DDC84</Color>
+        <Color x:Key="TextPrimary">#E8E8F0</Color>
+        <Color x:Key="TextMuted">#7878A0</Color>
+        <Color x:Key="Border">#3A3A55</Color>
+
+        <SolidColorBrush x:Key="BgDeepBrush" Color="{StaticResource BgDeep}"/>
+        <SolidColorBrush x:Key="BgCardBrush" Color="{StaticResource BgCard}"/>
+        <SolidColorBrush x:Key="BgInputBrush" Color="{StaticResource BgInput}"/>
+        <SolidColorBrush x:Key="AccentBlueBrush" Color="{StaticResource AccentBlue}"/>
+        <SolidColorBrush x:Key="AccentGreenBrush" Color="{StaticResource AccentGreen}"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
+        <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMuted}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Border}"/>
+
+        <!-- ── Converters ─────────────────────────────────────────────────── -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- ── TextBox Style ─────────────────────────────────────────────── -->
+        <Style x:Key="SearchBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource BgInputBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource AccentBlueBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Primary Button ─────────────────────────────────────────────── -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentBlueBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#6AB4FF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="#3A3A55"/>
+                                <Setter Property="Foreground" Value="#55556A"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#2E7ADB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Ghost Button (secondary) ──────────────────────────────────── -->
+        <Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#2A2A3E"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+
+        <!-- ── Section Label ─────────────────────────────────────────────── -->
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AccentBlueBrush}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="TextTransform" Value="Uppercase"/>
+            <Setter Property="LetterSpacing" Value="1"/>
+        </Style>
+
+        <!-- ── Card Border ───────────────────────────────────────────────── -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource BgCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="14"/>
+        </Style>
+
+        <!-- ── CheckBox Style ─────────────────────────────────────────────── -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,2"/>
+        </Style>
+
+        <!-- ── ListBox Style ─────────────────────────────────────────────── -->
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                Padding="6,3" CornerRadius="4">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#32325A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Header -->
-            <RowDefinition Height="Auto"/> <!-- Search -->
-            <RowDefinition Height="*"/>    <!-- List -->
-            <RowDefinition Height="Auto"/> <!-- Footer -->
+            <RowDefinition Height="Auto"/>  <!-- Header bar -->
+            <RowDefinition Height="*"/>     <!-- Content -->
+            <RowDefinition Height="Auto"/>  <!-- Status / footer -->
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Text="Select Models for Clash Automation" 
-                   FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#333"/>
+        <!-- ═══════════════════════════════════════════════════════════════════
+             HEADER BAR
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="#252538" Padding="20,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Search Bar -->
-        <Grid Grid.Row="1" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="NavisAutoClash" FontSize="18" FontWeight="Bold"
+                               Foreground="{StaticResource AccentBlueBrush}"/>
+                    <TextBlock Text="Automated Clash Test Generator for Navisworks 2024"
+                               FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" Content="⟳  Refresh Data"
+                        Style="{StaticResource GhostButton}"
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Reload selection sets and NWC models from the active document"/>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             MAIN CONTENT AREA
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" Margin="14,12,14,8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>     <!-- Selection A -->
+                <ColumnDefinition Width="10"/>    <!-- Gap -->
+                <ColumnDefinition Width="*"/>     <!-- Selection B -->
+                <ColumnDefinition Width="10"/>    <!-- Gap -->
+                <ColumnDefinition Width="220"/>   <!-- Config + Preview -->
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="SearchBox" 
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                     VerticalContentAlignment="Center" Padding="8,5"
-                     FontSize="14"/>
-            <TextBlock IsHitTestVisible="False" Text="Search models..." 
-                       VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Gray"
-                       Visibility="{Binding SearchText.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=SearchBox}"/>
+
+            <!-- ─────────────────── SELECTION A ─────────────────────────── -->
+            <Border Grid.Column="0" Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="SELECTION A — Sets"
+                               Style="{StaticResource SectionLabel}"/>
+
+                    <TextBox Grid.Row="1" Style="{StaticResource SearchBox}"
+                             Text="{Binding SearchTextA, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,0,8">
+                        <TextBox.Resources>
+                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
+                        </TextBox.Resources>
+                    </TextBox>
+
+                    <!-- Select/Clear all -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button Content="Select All" Style="{StaticResource GhostButton}"
+                                Padding="8,4" FontSize="11"
+                                Command="{Binding SelectAllACommand}" Margin="0,0,6,0"/>
+                        <Button Content="Clear" Style="{StaticResource GhostButton}"
+                                Padding="8,4" FontSize="11"
+                                Command="{Binding ClearAllACommand}"/>
+                    </StackPanel>
+
+                    <ListBox Grid.Row="3" ItemsSource="{Binding FilteredA}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          ToolTip="{Binding FullPath}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="⚙ " Foreground="#8888BB" FontSize="10"
+                                                   Visibility="{Binding IsSearchSet, Converter={StaticResource BoolToVis}}"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding DisplayName}" FontSize="13"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Grid.Row="4" FontSize="11" Margin="0,6,0,0"
+                               Foreground="{StaticResource TextMutedBrush}">
+                        <Run Text="{Binding SelectionA.Count, Mode=OneWay}"/>
+                        <Run Text=" set(s) total"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <!-- ─────────────────── SELECTION B ─────────────────────────── -->
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="SELECTION B — NWC Models"
+                               Style="{StaticResource SectionLabel}"/>
+
+                    <TextBox Grid.Row="1" Style="{StaticResource SearchBox}"
+                             Text="{Binding SearchTextB, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,0,8"/>
+
+                    <!-- Select/Clear all -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button Content="Select All" Style="{StaticResource GhostButton}"
+                                Padding="8,4" FontSize="11"
+                                Command="{Binding SelectAllBCommand}" Margin="0,0,6,0"/>
+                        <Button Content="Clear" Style="{StaticResource GhostButton}"
+                                Padding="8,4" FontSize="11"
+                                Command="{Binding ClearAllBCommand}"/>
+                    </StackPanel>
+
+                    <ListBox Grid.Row="3" ItemsSource="{Binding FilteredB}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          ToolTip="{Binding FilePath}">
+                                    <TextBlock Text="{Binding DisplayName}" FontSize="13"/>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Grid.Row="4" FontSize="11" Margin="0,6,0,0"
+                               Foreground="{StaticResource TextMutedBrush}">
+                        <Run Text="{Binding SelectionB.Count, Mode=OneWay}"/>
+                        <Run Text=" model(s) total"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <!-- ─────────────────── CONFIG + ACTIONS ─────────────────────── -->
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>   <!-- Config card -->
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>      <!-- Preview card -->
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>   <!-- Action buttons -->
+                </Grid.RowDefinitions>
+
+                <!-- Clash Config Card -->
+                <Border Grid.Row="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="CLASH RULES" Style="{StaticResource SectionLabel}"/>
+
+                        <!-- Test Type -->
+                        <TextBlock Text="Test Type" FontSize="11"
+                                   Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                        <ComboBox SelectedIndex="0"
+                                  Background="{StaticResource BgInputBrush}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  Margin="0,0,0,10" FontSize="13">
+                            <ComboBoxItem Content="Hard Clash" Tag="Hard"/>
+                            <ComboBoxItem Content="Hard (Conservative)" Tag="HardConservative"/>
+                            <ComboBoxItem Content="Clearance" Tag="Clearance"/>
+                            <ComboBoxItem Content="Duplicates" Tag="Duplicates"/>
+                        </ComboBox>
+
+                        <!-- Tolerance -->
+                        <TextBlock Text="Tolerance (m)" FontSize="11"
+                                   Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding ClashRule.Tolerance, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource SearchBox}" Margin="0,0,0,10"/>
+
+                        <!-- Naming Pattern -->
+                        <TextBlock Text="Naming Pattern" FontSize="11"
+                                   Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding ClashRule.NamingPattern, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource SearchBox}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Use {SetA} and {ModelB} as tokens." FontSize="10"
+                                   Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap"/>
+
+                        <!-- Validation Error -->
+                        <TextBlock Text="{Binding ClashRule.ValidationError}"
+                                   Foreground="#FF6B6B" FontSize="11" TextWrapping="Wrap"
+                                   Margin="0,6,0,0"
+                                   Visibility="{Binding ClashRule.ValidationError,
+                                       Converter={StaticResource BoolToVis},
+                                       ConverterParameter=inverse}"/>
+
+                        <!-- Run immediately toggle -->
+                        <CheckBox Content="Run tests after creating" Margin="0,12,0,0"
+                                  IsChecked="{Binding RunAfterGenerate}"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextMutedBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Preview Card -->
+                <Border Grid.Row="2" Style="{StaticResource Card}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="PREVIEW" Style="{StaticResource SectionLabel}" Margin="0"/>
+                            <TextBlock FontSize="11" Margin="8,0,0,0"
+                                       Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center">
+                                <Run Text="("/>
+                                <Run Text="{Binding PreviewItems.Count, Mode=OneWay}"/>
+                                <Run Text=" tests)"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <ListBox Grid.Row="1" ItemsSource="{Binding PreviewItems}"
+                                 MaxHeight="160">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="11"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip="{Binding}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Row="4" Spacing="8">
+                    <Button Content="Preview Tests"
+                            Style="{StaticResource GhostButton}"
+                            Command="{Binding PreviewCommand}"
+                            ToolTip="Show what tests will be created without committing"/>
+                    <Button Content="✓  Generate Tests"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding GenerateCommand}"
+                            ToolTip="Create clash tests in Navisworks Clash Detective"/>
+                </StackPanel>
+            </Grid>
         </Grid>
 
-        <!-- Models List -->
-        <ListBox Grid.Row="2" ItemsSource="{Binding FilteredModels}" BorderThickness="0" Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="White" Margin="0,0,0,5" Padding="10" CornerRadius="4">
-                        <CheckBox IsChecked="{Binding IsSelected}" VerticalContentAlignment="Center">
-                            <TextBlock Text="{Binding Name}" FontSize="14" Margin="10,0,0,0"/>
-                        </CheckBox>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <!-- ═══════════════════════════════════════════════════════════════════
+             STATUS BAR
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="#16162A" Padding="16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Footer -->
-        <Grid Grid.Row="3" Margin="0,15,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" Foreground="#666"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button Content="Load Models" Command="{Binding LoadModelsCommand}" Padding="15,8" Margin="0,0,10,0"/>
-                <Button Content="Run Clash Tests" Command="{Binding RunCommand}" Padding="15,8" Background="#007ACC" Foreground="White" BorderThickness="0"/>
-            </StackPanel>
-        </Grid>
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           FontSize="12" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip="{Binding StatusMessage}"/>
+
+                <!-- Busy indicator -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="Working…" FontSize="12"
+                               Foreground="{StaticResource AccentBlueBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

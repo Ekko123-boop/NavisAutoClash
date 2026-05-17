@@ -1,18 +1,31 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+using NavisAutoClash.Core.Domain.Models;
+using NavisAutoClash.UI.Infrastructure;
 
 namespace NavisAutoClash.UI.ViewModels
 {
-    public partial class NwcModelRowViewModel : ObservableObject
+    /// <summary>Represents a single Selection B entry (an NWC model) in the list.</summary>
+    public sealed class NwcModelRowViewModel : ViewModelBase
     {
-        [ObservableProperty]
-        private string _name = string.Empty;
-
-        [ObservableProperty]
         private bool _isSelected;
 
-        public NwcModelRowViewModel(string name)
+        public NwcModelInfo Model { get; }
+
+        /// <summary>Friendly name (filename without extension) shown in the list.</summary>
+        public string DisplayName => Model.DisplayName;
+
+        /// <summary>Full file path shown as a tooltip.</summary>
+        public string FilePath => Model.FilePath;
+
+        /// <summary>Whether this entry is checked by the user.</summary>
+        public bool IsSelected
         {
-            Name = name;
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
+
+        public NwcModelRowViewModel(NwcModelInfo model)
+        {
+            Model = model;
         }
     }
 }

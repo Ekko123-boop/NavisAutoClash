@@ -1,52 +1,37 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using NavisAutoClash.Core.Application.Contracts;
 
 namespace NavisAutoClash.Infrastructure.Threading
 {
-    public class NavisDispatcher : INavisDispatcher
+    /// <summary>
+    /// Marshals calls onto the WPF dispatcher thread, which is also the Navisworks UI thread.
+    /// Falls back to direct invocation if no WPF Application is running (e.g. unit tests).
+    /// </summary>
+    public sealed class NavisDispatcher : INavisDispatcher
     {
+        /// <inheritdoc/>
         public void Invoke(Action action)
         {
-            if (Application.Current?.Dispatcher != null)
-            {
-                Application.Current.Dispatcher.Invoke(action);
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.CheckAccess())
+                dispatcher.Invoke(action);
             else
-            {
                 action();
-            }
         }
 
+        /// <inheritdoc/>
         public T Invoke<T>(Func<T> func)
         {
-            if (Application.Current?.Dispatcher != null)
-            {
-                return Application.Current.Dispatcher.Invoke(func);
-            }
-            return func();
-        }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-        public async Task InvokeAsync(Action action)
-        {
-            if (Application.Current?.Dispatcher != null)
-            {
-                await Application.Current.Dispatcher.InvokeAsync(action);
-            }
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.CheckAccess())
+                return dispatcher.Invoke(func);
             else
-            {
-                action();
-            }
-        }
-
-        public async Task<T> InvokeAsync<T>(Func<T> func)
-        {
-            if (Application.Current?.Dispatcher != null)
-            {
-                return await Application.Current.Dispatcher.InvokeAsync(func);
-            }
-            return func();
+                return func();
         }
     }
 }

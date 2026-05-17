@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <RootNamespace>NavisAutoClash.Plugin</RootNamespace>
-    <AssemblyName>NavisAutoClash.2024</AssemblyName>
-    <LangVersion>latest</LangVersion>
+    <AssemblyName>NavisAutoClashPlugin2024</AssemblyName>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <!-- Copy all dependency DLLs to output so they land next to the plugin DLL -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2024</NavisworksPath>
   </PropertyGroup>
@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Private=False: these DLLs are already in the Navisworks installation dir -->
     <Reference Include="Autodesk.Navisworks.Api" Condition="Exists('$(NavisworksPath)\Autodesk.Navisworks.Api.dll')">
       <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>
       <Private>False</Private>

@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
+    <RootNamespace>NavisAutoClash.Core</RootNamespace>
+    <AssemblyName>NavisAutoClash.Core</AssemblyName>
   </PropertyGroup>
 
 </Project>

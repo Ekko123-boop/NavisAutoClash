@@ -8,7 +8,7 @@ namespace NavisAutoClash.UI.Views
         public MainWindow(MainViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
+            DataContext = viewModel ?? throw new System.ArgumentNullException(nameof(viewModel));
         }
     }
 }
