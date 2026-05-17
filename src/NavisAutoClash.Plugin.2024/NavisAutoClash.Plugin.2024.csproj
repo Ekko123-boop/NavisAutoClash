@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NavisAutoClash.Core\NavisAutoClash.Core.csproj" />
     <ProjectReference Include="..\NavisAutoClash.Infrastructure\NavisAutoClash.Infrastructure.csproj" />
     <ProjectReference Include="..\NavisAutoClash.UI\NavisAutoClash.UI.csproj" />

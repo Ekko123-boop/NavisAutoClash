@@ -39,8 +39,13 @@ namespace NavisAutoClash.Core.Domain.Models
         /// <inheritdoc/>
         public override bool Equals(object? obj) => Equals(obj as NwcModelInfo);
 
-        /// <inheritdoc/>
-        public override int GetHashCode() => HashCode.Combine(ModelIndex, StringComparer.OrdinalIgnoreCase.GetHashCode(FilePath));
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 31 + ModelIndex.GetHashCode();
+            hash = hash * 31 + StringComparer.OrdinalIgnoreCase.GetHashCode(FilePath);
+            return hash;
+        }
 
         /// <inheritdoc/>
         public override string ToString() => DisplayName;

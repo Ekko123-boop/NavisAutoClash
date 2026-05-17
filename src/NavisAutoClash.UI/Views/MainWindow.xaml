@@ -104,8 +104,6 @@
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,6"/>
-            <Setter Property="TextTransform" Value="Uppercase"/>
-            <Setter Property="LetterSpacing" Value="1"/>
         </Style>
 
         <!-- ── Card Border ───────────────────────────────────────────────── -->
@@ -392,10 +390,11 @@
                 </Border>
 
                 <!-- Action Buttons -->
-                <StackPanel Grid.Row="4" Spacing="8">
+                <StackPanel Grid.Row="4">
                     <Button Content="Preview Tests"
                             Style="{StaticResource GhostButton}"
                             Command="{Binding PreviewCommand}"
+                            Margin="0,0,0,8"
                             ToolTip="Show what tests will be created without committing"/>
                     <Button Content="✓  Generate Tests"
                             Style="{StaticResource PrimaryButton}"

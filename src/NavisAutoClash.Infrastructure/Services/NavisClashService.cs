@@ -159,10 +159,11 @@ namespace NavisAutoClash.Infrastructure.Services
             };
 
             // Selection A — reference the existing selection set
-            newTest.SelectionA.Selection.SelectionSources.Add(setA);
+            newTest.SelectionA.Selection.SelectionSources.Add(doc.SelectionSets.CreateSelectionSource(setA));
 
             // Selection B — explicit ModelItemCollection from the NWC model
-            var selectionB = new ModelItemCollection(modelBItems);
+            var selectionB = new ModelItemCollection();
+            selectionB.AddRange(modelBItems);
             newTest.SelectionB.Selection.CopyFrom(selectionB);
 
             // Add to Clash Detective
@@ -187,7 +188,7 @@ namespace NavisAutoClash.Infrastructure.Services
             {
                 if (item.IsGroup)
                 {
-                    var found = FindInChildren(item.Children, displayName);
+                    var found = FindInChildren(((GroupItem)item).Children, displayName);
                     if (found != null) return found;
                 }
                 else if (item is SelectionSet ss &&
@@ -226,7 +227,7 @@ namespace NavisAutoClash.Infrastructure.Services
             ClashType.Hard => ClashTestType.Hard,
             ClashType.HardConservative => ClashTestType.HardConservative,
             ClashType.Clearance => ClashTestType.Clearance,
-            ClashType.Duplicates => ClashTestType.Duplicates,
+            ClashType.Duplicates => ClashTestType.Duplicate,
             _ => ClashTestType.Hard
         };
     }

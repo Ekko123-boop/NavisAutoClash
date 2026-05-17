@@ -73,11 +73,11 @@ namespace NavisAutoClash.Infrastructure.Repositories
                 if (item.IsGroup)
                 {
                     // Folder — recurse into children
-                    TraverseItems(item.Children, fullPath, results);
+                    TraverseItems(((GroupItem)item).Children, fullPath, results);
                 }
                 else if (item is SelectionSet set)
                 {
-                    var isSearchSet = set is SearchSet;
+                    var isSearchSet = set.HasSearch;
                     results.Add(new SelectionSetInfo(set.DisplayName, fullPath, isSearchSet));
                 }
             }
